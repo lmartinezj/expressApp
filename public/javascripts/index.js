@@ -78,7 +78,13 @@ document.getElementById('payment-form').addEventListener('createToken', async(ev
     
     event.preventDefault()
     const additionalData = {
-        holder_name: document.getElementById('cardholder-name').value // This field is mandatory
+        holder_name: document.getElementById('cardholder-name').value, // This field is mandatory
+        billing_address:{
+            line1: document.getElementById('line1').value,
+            city: document.getElementById('city').value,
+            country: document.getElementById('country').value,
+            phone: document.getElementById('phone').value
+        } 
     }
     result = await POS.createToken(cardNumber, {
         additionalData,

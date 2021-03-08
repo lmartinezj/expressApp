@@ -18,6 +18,23 @@ html
         .field
           label CVV 
           #cvv.input.empty
+        .field
+          label Billing Address  
+        .field
+          label Email
+          input#email.input.empty(placeholder='mail@mail.com')
+        .field
+          label Address Line 1 
+          input#line1.input.empty(placeholder='Street Address')
+        .field
+          label City 
+          input#city.input.empty(placeholder='City')
+        .field
+          label Country 
+          input#country.input.empty(placeholder='USA' pattern='[A-Z]{3}' autocomplete='off')
+        .field
+          label Phone 
+          input#phone.input.empty(placeholder='333-333-4444')
         button#pay_button(type='submit') Pay $25
     script(src='https://js.paymentsos.com/v3/latest/secure-fields.min.js')
     script(src='/javascripts/index.js')
