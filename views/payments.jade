@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    title #{title}
+  body
+    h1 Secure Fields Form
+    .checkout-page
+      form#payment-form(method='POST' action='payments/#{paymentId}/authorizations')
+        .field
+          label #{paymentId}
+        .field          
+          label #{amount}
+        .field      
+          label #{currency}
+        .field
+          label #{description}
+        button#auth_button(type='submit') Authorize
+    script(src='/javascripts/payments.js')
+      
+

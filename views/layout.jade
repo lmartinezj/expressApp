@@ -1,0 +1,25 @@
+doctype html
+html
+  head
+    title #{title}
+  body
+    h1 Create Payment Request
+    .checkout-page
+      form#payment-form(method='POST' action='/payments')
+        .field
+          label Name
+          input#cardholder-name.input.empty(placeholder='John Doe')
+        .field
+          label Card Number
+          #card-number.input.empty
+        .field
+          label Expiration Date 
+          #exp-date.input.empty
+        .field
+          label CVV 
+          #cvv.input.empty
+        button#pay_button(type='submit') Pay $25
+    script(src='https://js.paymentsos.com/v3/latest/secure-fields.min.js')
+    script(src='/javascripts/index.js')
+      
+
