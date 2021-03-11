@@ -81,11 +81,9 @@ app.post('/payments', function (req, res) {
     console.log(data)
     */
     
-
-    var data;
     fetch(url, requestOptions)
     .then(response => response.text())
-    .then(result => res.write(result.id))
+    .then(result => console.log(result))
     .catch(error => console.log('error', error))    
 
     //console.log(data);
