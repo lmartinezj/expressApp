@@ -82,7 +82,7 @@ document.getElementById('payment-form').addEventListener('createToken', async(ev
         billing_address:{
             line1: document.getElementById('line1').value,
             city: document.getElementById('city').value,
-            country: document.getElementById('country').value,
+            country: document.getElementById('country').value.toUpperCase(),
             phone: document.getElementById('phone').value
         } 
     }
@@ -99,41 +99,36 @@ document.getElementById('payment-form').addEventListener('submit', async(event) 
     for (var key in json){
         console.log("key: " + key + " value: " + json[key])
     }
-    result = createRequest()
-    console.log("Payment response: " + result)
+    result = await createPaymentRequest()
 });
 
-async function createRequest() {
-    const url = 'payments';
-    const data = {
-        "amount": "25",
-        "currency": "EUR",
-        "statement_soft_descriptor": "Test Payment"
-    };
-    const idempotencyKey = "cust-" + Math.floor(Math.random() * 1000) + "-payment";
+async function createPaymentRequest() {
+    const url = '/payments';
 
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+        "amount":25,
+        "currency":"EUR",
+        "billing_address":JSON.parse(result)["billing_address"],
+        "sastatement_soft_descriptor": "Test Payment for PayU",
+        "order":{
+            "id":"myorderid"
+        }
+    });
     
-    const ohterParams = {
-        "headers": {
-            "Content-Type": "application/json",
-            "api-version": "1.3.0",
-            "x-payments-os-env": "test",
-            "app-id": "co.Anthara.testbusinessunit",
-            "private-key": "60055ba6-92ad-4a5a-8fec-e64e6d2d208c",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": "true",
-            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
-            "Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, private-key, idempotency-key, Authorization",
-            "idempotency-key": idempotencyKey
-        },
-        "body": data,
-        "method": "POST"
-    };
-    
-    fetch(url, ohterParams)
-    .then(datos =>{return datos.json()})
-    .then(res => {console.log(res)})
-    .catch(error => {console.log(error)})
+    var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+    }
+
+    fetch("/payments", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
 }
 
 var cardReadyToSubmit = false;

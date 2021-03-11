@@ -1,11 +1,10 @@
-doctype html
 html
   head
     title #{title}
   body
     h1 Secure Fields Form
     .checkout-page
-      form#payment-form(method='POST' action='payments/#{paymentId}/authorizations')
+      form#payment-form(method='POST' action='payments/#{payment_id}/authorizations')
         .field
           label #{paymentId}
         .field          

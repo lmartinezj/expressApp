@@ -5,7 +5,7 @@ html
   body
     h1 Create Payment Request
     .checkout-page
-      form#payment-form(method='POST' action='/payments')
+      form#payment-form(target='/payments')
         .field
           label Name
           input#cardholder-name.input.empty(placeholder='John Doe')
@@ -31,11 +31,13 @@ html
           input#city.input.empty(placeholder='City')
         .field
           label Country 
-          input#country.input.empty(placeholder='USA' pattern='[A-Z]{3}' autocomplete='off')
+          input#country.input.empty(placeholder='USA' pattern='[A-Z]{3}' 
+          autocomplete='off' maxlength="3")
         .field
           label Phone 
           input#phone.input.empty(placeholder='333-333-4444')
-        button#pay_button(type='submit') Pay $25
+        .field
+          button#pay_button(type='submit') Pay $25
     script(src='https://js.paymentsos.com/v3/latest/secure-fields.min.js')
     script(src='/javascripts/index.js')
       

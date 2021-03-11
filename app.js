@@ -37,18 +37,68 @@ app.use((req, res, next) => {
     next();
 });
   
-app.get('/tokens', function(req, res) {
+app.get('/', function(req, res) {
     res.render('layout', { title: 'Create Token'});
     res.end();
 });
 
-app.post('/payments', cors(), function (req, res) {
+app.post('/payments', function (req, res) {
+    
+    const url = "https://api.paymentsos.com/payments";
+    const idempotencyKey = "cust-" + Math.floor(Math.random() * 1000) + "-payment";
+    
+    var myHeaders = new fetch.Headers();
+    myHeaders.append("app-id", "co.Anthara.testbusinessunit");
+    myHeaders.append("private-key", "60055ba6-92ad-4a5a-8fec-e64e6d2d208c");
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("api-version", "1.3.0");
+    myHeaders.append("x-payments-os-env", "test");
+    myHeaders.append("idempotency_key", idempotencyKey);
+
+    var raw = JSON.stringify({
+        "amount": req.body.amount,
+        "currency":req.body.currency,
+        "billing_address":req.body.billing_address,
+        "order":{
+            "id":"myorderid"
+        }
+    });
+    
+    var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+    };
+
+    /*
+    var data = fetch(url, requestOptions)
+    .then(function(response){
+        return response.text();
+    })
+    .catch(error => console.log('error', error)) 
+
+    console.log(data)
+    */
+    
+
+    var data;
+    fetch(url, requestOptions)
+    .then(response => response.text())
+    .then(result => res.write(result.id))
+    .catch(error => console.log('error', error))    
+
+    //console.log(data);
+
+    /*
     res.render('payments', { 
         title: 'Create Payment',
         amount: req.body.amount,
         currency: req.body.currency,
         description: req.body.statement_soft_descriptor
-    });
+        //payment_id: JSON.stringify(result['id'])
+    })       
+    */
 });
 
 module.exports = app;
