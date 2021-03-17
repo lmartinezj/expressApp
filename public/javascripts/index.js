@@ -90,25 +90,84 @@ document.getElementById('payment-form').addEventListener('createToken', async(ev
         additionalData,
         environment: 'test' // Set the PaymentOS environment you're connecting to
     })
-    console.log("The response is: " + result)
-});
-
-document.getElementById('payment-form').addEventListener('submit', async(event) => {
-    event.preventDefault()
+    console.log("The response is: ")
     var json = JSON.parse(result)
     for (var key in json){
         console.log("key: " + key + " value: " + json[key])
     }
-    result = await createPaymentRequest()
+});
+
+document.getElementById('payment-form').addEventListener('submit', async(event) => {
+    event.preventDefault()
+    const url = "/payments";
+    
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    
+    var raw = {
+        "amount": 25,
+        "currency":"EUR",
+        "billing_address": {
+            "line1":document.getElementById('line1').value,
+            "city":document.getElementById('city').value,
+            "country":document.getElementById('country').value.toUpperCase(),
+            "phone":document.getElementById('phone').value
+        },
+        "order": {
+            "id":"myorderid"
+        }
+    };
+
+    var paymentRequest = {
+        method: 'POST',
+        headers: myHeaders,
+        body: JSON.stringify(raw),
+        redirect: 'follow'
+    }
+
+    await fetch(url, paymentRequest)
+    .then(response => {
+        if (response.ok) {
+            console.log("SUCCESS")
+            return response.text()
+        } else {
+            console.log("FAILURE")
+        }
+    })
+    .then(data => {
+        document.write(data)
+    })
+    .catch(error => console.log("Error index.js: " + error.message))
+
+    /*
+    try {
+        const paymentRequest = await createPaymentRequest()
+        const response = await fetch("/payments", paymentRequest)
+        console.log("built paymentRequest: " + Object.entries(paymentRequest))
+        console.log("Response from /payments is: " + console.log(response) )
+    } catch(error) {
+        console.log("Error: " + error.message)
+    }
+
+    
+    try {
+        const response = await fetch("/payments", paymentRequest)
+        console.log("Response from /payments is: " + console.log(response) )
+        return response
+    } catch (error){
+        console.log("Error from /payments is: " + error.message)
+    }
+    */
+
 });
 
 async function createPaymentRequest() {
     const url = '/payments';
 
     var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append('Content-Type', 'application/json');
 
-    var raw = JSON.stringify({
+    var raw = {
         "amount":25,
         "currency":"EUR",
         "billing_address":JSON.parse(result)["billing_address"],
@@ -116,7 +175,7 @@ async function createPaymentRequest() {
         "order":{
             "id":"myorderid"
         }
-    });
+    }
     
     var requestOptions = {
     method: 'POST',
@@ -125,10 +184,7 @@ async function createPaymentRequest() {
     redirect: 'follow'
     }
 
-    fetch("/payments", requestOptions)
-    .then(response => response.text())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error));
+    return requestOptions
 }
 
 var cardReadyToSubmit = false;
