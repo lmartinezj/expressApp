@@ -4,15 +4,15 @@ html
   body
     h1 Secure Fields Form
     .checkout-page
-      form#payment-form(method='POST' action='payments/#{payment_id}/authorizations')
+      form#authorization-form(method='POST' action='payments/#{payment_id}/authorizations')
         .field
-          label #{paymentId}
+          label#payment_id payment_id: #{payment_id}
         .field          
-          label #{amount}
+          label amount: #{amount}
         .field      
-          label #{currency}
+          label currency: #{currency}
         .field
-          label #{description}
+          label description: #{description}
         button#auth_button(type='submit') Authorize
     script(src='/javascripts/payments.js')
       

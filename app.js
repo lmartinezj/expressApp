@@ -10,6 +10,7 @@ const http = require('http');
 const fetch = require('node-fetch');
 const { response } = require('express');
 require('dotenv').config();
+var cookieParser = require('cookie-parser')
 
 var app = express();
 
@@ -24,6 +25,7 @@ app.use(express.json())
 app.use(express.urlencoded({
     extended: true  
 }))
+app.use(cookieParser())
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -43,6 +45,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/payments', async (req, res, next) => {
+    console.log("token: " + req.cookies.token); 
     
     const url = process.env.PAYMENTS_URL;
     const idempotencyKey = "cust-" + Math.floor(Math.random() * 1000) + "-payment";
@@ -59,6 +62,61 @@ app.post('/payments', async (req, res, next) => {
         "amount": req.body.amount,
         "currency":req.body.currency,
         "billing_address":req.body.billing_address,
+        "statement_soft_descriptor": req.body.statement_soft_descriptor,
+        "order":{
+            "id":"myorderid"
+        }
+    };
+
+    var paymentRequest = {
+        method: 'POST',
+        headers: myHeaders,
+        body: JSON.stringify(raw),
+        redirect: 'follow'
+    }
+
+    await fetch(url, paymentRequest)
+    .then(response => {
+        if (response.ok) {
+            console.log("SUCCESS from paymentOS")
+            return response.json()
+        } else {
+            console.log("FAILURE from paymentOS")
+        }
+    })
+    .then(data => {
+        res.render('payments', { 
+            title: 'Create Payment',
+            amount: data.amount,
+            currency: data.currency,
+            description: data.statement_soft_descriptor,
+            payment_id: data.id
+        })
+    })
+    .catch(error => console.log("Error app.js: " + error.message))
+    next();     
+    
+});
+
+app.post('/payments/:paymentid/authorizations', async (req, res, next) => {
+    console.log("token: " + req.cookies.token); 
+    
+    const url = process.env.PAYMENTS_URL;
+    const idempotencyKey = "cust-" + Math.floor(Math.random() * 1000) + "-payment";
+    
+    var myHeaders = new fetch.Headers();
+    myHeaders.append("app_id", process.env.APP_ID);
+    myHeaders.append("private_key", process.env.PRIVATE_KEY);
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("api-version", process.env.API_VERSION);
+    myHeaders.append("x-payments-os-env", process.env.X_PAYMENTS_OS_ENV);
+    myHeaders.append("idempotency_key", idempotencyKey);
+
+    var raw = {
+        "amount": req.body.amount,
+        "currency":req.body.currency,
+        "billing_address":req.body.billing_address,
+        "statement_soft_descriptor": req.body.statement_soft_descriptor,
         "order":{
             "id":"myorderid"
         }
@@ -91,18 +149,6 @@ app.post('/payments', async (req, res, next) => {
     })
     .catch(error => console.log("Error app.js: " + error.message))
     next();
-
-    
-    /*   
-    res.render('payments', { 
-        title: 'Create Payment',
-        amount: req.body.amount,
-        currency: req.body.currency,
-        description: req.body.statement_soft_descriptor
-        //payment_id: JSON.stringify(result['id'])
-    })
-    */       
-    
 });
 
 module.exports = app;

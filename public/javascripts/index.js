@@ -92,6 +92,7 @@ document.getElementById('payment-form').addEventListener('createToken', async(ev
     })
     console.log("The response is: ")
     var json = JSON.parse(result)
+    document.cookie = "token="+json.token+"; secure"
     for (var key in json){
         console.log("key: " + key + " value: " + json[key])
     }
@@ -113,6 +114,7 @@ document.getElementById('payment-form').addEventListener('submit', async(event) 
             "country":document.getElementById('country').value.toUpperCase(),
             "phone":document.getElementById('phone').value
         },
+        "statement_soft_descriptor": "Test Payment for PayU",
         "order": {
             "id":"myorderid"
         }
