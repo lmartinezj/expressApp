@@ -92,7 +92,8 @@ document.getElementById('payment-form').addEventListener('createToken', async(ev
     })
     console.log("The response is: ")
     var json = JSON.parse(result)
-    document.cookie = "token="+json.token+"; secure"
+    document.cookie = "token=" + json.token + "; secure"
+    document.cookie = "encrypted_cvv=" + json.encrypted_cvv + "; secure"
     for (var key in json){
         console.log("key: " + key + " value: " + json[key])
     }

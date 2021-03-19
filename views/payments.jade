@@ -6,7 +6,8 @@ html
     .checkout-page
       form#authorization-form(method='POST' action='payments/#{payment_id}/authorizations')
         .field
-          label#payment_id payment_id: #{payment_id}
+          label payment_id: #{payment_id}
+          input(type='hidden' id='payment_id' value='#{payment_id}')
         .field          
           label amount: #{amount}
         .field      

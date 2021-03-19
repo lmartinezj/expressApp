@@ -41,3 +41,16 @@ Content-Type: application/json
         "id":"myorderid"
     }
 }
+
+###
+POST http://localhost:3000/payments/ec993a89-dbea-4341-bef9-550127f49b62/authorizations
+Content-Type: application/json
+
+{
+    "payment_method":{
+        "token":"48ad464c-fc54-4638-b925-575a5b13fdf4",
+        "type":"tokenized",
+        "credit_card_cvv":"OWQ5ODcyN2UtNDE1OS00ZThjLWFlODQtZGU2YzBmN2I1NGViY3Z2X2RlbGltaXRlcnZhdWx0OnY0Ok5NNTV4V0lVZm9jcjI4bjAyUld3YlljbWJjQ1AxcjZZbnI1K0hVWVNVcWQwbTlISWZKMDI3YUZPRmdHeml2dDVVaytURDZkVlBkUGVraTJuV3pVb09WN0tYVE01b1pTTFdGalFBU3Fm"
+    },
+    "reconciliation_id":"23434534534"
+}

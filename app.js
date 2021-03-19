@@ -104,7 +104,8 @@ app.post('/payments', async (req, res, next) => {
 app.post('/payments/:paymentid/authorizations', async (req, res, next) => {
     console.log("token: " + req.cookies.token); 
     
-    const url = process.env.PAYMENTS_URL;
+    const url = process.env.PAYMENTS_URL + "/" + req.params.paymentid + "/authorizations";
+    console.log("paymentOS url: " + url)
     const idempotencyKey = "cust-" + Math.floor(Math.random() * 1000) + "-payment";
     
     var myHeaders = new fetch.Headers();
@@ -116,23 +117,22 @@ app.post('/payments/:paymentid/authorizations', async (req, res, next) => {
     myHeaders.append("idempotency_key", idempotencyKey);
 
     var raw = {
-        "amount": req.body.amount,
-        "currency":req.body.currency,
-        "billing_address":req.body.billing_address,
-        "statement_soft_descriptor": req.body.statement_soft_descriptor,
-        "order":{
-            "id":"myorderid"
-        }
+        "payment_method": {
+            "token":req.cookies.token,
+            "type":"tokenized",
+            "credit_card_cvv":req.cookies.encrypted_cvv
+        },
+        "reconciliation_id":"23434534534"
     };
 
-    var paymentRequest = {
+    var authorizationRequest = {
         method: 'POST',
         headers: myHeaders,
         body: JSON.stringify(raw),
         redirect: 'follow'
     }
 
-    await fetch(url, paymentRequest)
+    await fetch(url, authorizationRequest)
     .then(response => {
         if (response.ok) {
             console.log("SUCCESS from paymentOS")
@@ -142,6 +142,8 @@ app.post('/payments/:paymentid/authorizations', async (req, res, next) => {
         }
     })
     .then(data => {
+        console.log(data)
+        /*
         res.render('payments', { 
             title: 'Create Payment',
             amount: data.amount,
@@ -149,6 +151,7 @@ app.post('/payments/:paymentid/authorizations', async (req, res, next) => {
             description: data.statement_soft_descriptor,
             payment_id: data.id
         })
+        */
     })
     .catch(error => console.log("Error app.js: " + error.message))
     next();
