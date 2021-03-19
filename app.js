@@ -9,7 +9,9 @@ const cors = require('cors')
 const http = require('http');
 const fetch = require('node-fetch');
 const { response } = require('express');
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') { 
+    require('dotenv').config() 
+}
 var cookieParser = require('cookie-parser')
 
 var app = express();
@@ -29,9 +31,6 @@ app.use(cookieParser())
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-if (process.env.NODE_ENV !== 'production') { 
-    require('dotenv').config() 
- }
 
 app.use(cors())
 app.use((req, res, next) => {
