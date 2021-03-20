@@ -89,7 +89,7 @@ app.post('/payments', async (req, res, next) => {
     })
     .then(data => {
         res.render('payments', { 
-            title: 'Create Payment',
+            title: 'Authorize Payment',
             amount: data.amount,
             currency: data.currency,
             description: data.statement_soft_descriptor,
@@ -97,8 +97,6 @@ app.post('/payments', async (req, res, next) => {
         })
     })
     .catch(error => console.log("Error app.js: " + error.message))
-    next();     
-    
 });
 
 app.post('/payments/:paymentid/authorizations', async (req, res, next) => {
@@ -142,19 +140,17 @@ app.post('/payments/:paymentid/authorizations', async (req, res, next) => {
         }
     })
     .then(data => {
-        console.log(data)
-        /*
-        res.render('payments', { 
-            title: 'Create Payment',
+        console.debug(data)  
+        //res.send(data)      
+        res.render('authorizations', { 
+            title: 'Capture Payment',
             amount: data.amount,
             currency: data.currency,
             description: data.statement_soft_descriptor,
-            payment_id: data.id
+            payment_id: req.params.paymentid
         })
-        */
     })
     .catch(error => console.log("Error app.js: " + error.message))
-    next();
 });
 
 module.exports = app;

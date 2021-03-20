@@ -107,7 +107,7 @@ document.getElementById('payment-form').addEventListener('submit', async(event) 
     myHeaders.append("Content-Type", "application/json");
     
     var raw = {
-        "amount": 25,
+        "amount": 2500,
         "currency":"EUR",
         "billing_address": {
             "line1":document.getElementById('line1').value,

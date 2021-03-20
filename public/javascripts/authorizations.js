@@ -14,30 +14,17 @@ function getCookieByName(cookieName) {
     {})[cookieName];
 } 
 
-console.log("token: " + getCookieByName("token"));
-console.log("encrypted_cvv: " + getCookieByName("encrypted_cvv"));
-
-document.getElementById('authorization-form').addEventListener('submit', async(event) => {
+document.getElementById('captures-form').addEventListener('submit', async(event) => {
     event.preventDefault()
-    const url = "/payments/" + document.getElementById('payment_id').value + "/authorizations";
-    console.log("sent Auth request url: " + url);
+    const url = "/payments/" + document.getElementById('payment_id').value + "/captures";
+    console.log("sent Capture request url: " + url);
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    var raw = JSON.stringify({
-        "payment_method":{
-            "token":getCookieByName("token"),
-            "type":"tokenized",
-            "credit_card_cvv":getCookieByName("encrypted_cvv")
-        },
-        "reconciliation_id":"23434534534"
-    });
-
     var authorizationRequest = {
         method: 'POST',
         headers: myHeaders,
-        body: raw,
         redirect: 'follow'
     }
 

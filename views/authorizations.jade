@@ -2,9 +2,9 @@ html
   head
     title #{title}
   body
-    h1 Authorization Form
+    h1 Capture Form
     .checkout-page
-      form#authorization-form(method='POST' action='payments/#{payment_id}/authorizations')
+      form#captures-form(method='POST' action='payments/#{payment_id}/captures')
         .field
           label payment_id: #{payment_id}
           input(type='hidden' id='payment_id' value='#{payment_id}')
@@ -14,7 +14,5 @@ html
           label currency: #{currency}
         .field
           label description: #{description}
-        button#auth_button(type='submit') Authorize
-    script(src='/javascripts/payments.js')
-      
-
+        button#auth_button(type='submit') Capture
+    script(src='/javascripts/authorizations.js')
