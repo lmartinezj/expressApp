@@ -153,4 +153,48 @@ app.post('/payments/:paymentid/authorizations', async (req, res, next) => {
     .catch(error => console.log("Error app.js: " + error.message))
 });
 
+app.post('/payments/:paymentid/captures', async (req, res, next) => {
+    console.log("token: " + req.cookies.token); 
+    
+    const url = process.env.PAYMENTS_URL + "/" + req.params.paymentid + "/captures";
+    console.log("paymentOS url: " + url)
+    const idempotencyKey = "cust-" + Math.floor(Math.random() * 1000) + "-payment";
+    
+    var myHeaders = new fetch.Headers();
+    myHeaders.append("app_id", process.env.APP_ID);
+    myHeaders.append("private_key", process.env.PRIVATE_KEY);
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("api-version", process.env.API_VERSION);
+    myHeaders.append("x-payments-os-env", process.env.X_PAYMENTS_OS_ENV);
+    myHeaders.append("idempotency_key", idempotencyKey);
+
+    var authorizationRequest = {
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
+    }
+
+    await fetch(url, authorizationRequest)
+    .then(response => {
+        if (response.ok) {
+            console.log("SUCCESS from paymentOS")
+            return response.json()
+        } else {
+            console.log("FAILURE from paymentOS")
+        }
+    })
+    .then(data => {
+        console.debug(data)  
+        //res.send(data)      
+        res.render('captures', { 
+            title: 'Refund Payment',
+            amount: data.amount,
+            currency: data.currency,
+            description: data.statement_soft_descriptor,
+            payment_id: req.params.paymentid
+        })
+    })
+    .catch(error => console.log("Error app.js: " + error.message))
+});
+
 module.exports = app;

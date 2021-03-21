@@ -1,0 +1,18 @@
+html
+  head
+    title #{title}
+  body
+    h1 Refunds Form
+    .checkout-page
+      form#refunds-form(method='POST' action='payments/#{payment_id}/refunds')
+        .field
+          label payment_id: #{payment_id}
+          input(type='hidden' id='payment_id' value='#{payment_id}')
+        .field          
+          label amount: #{amount}
+        .field      
+          label currency: #{currency}
+        .field
+          label description: #{description}
+        button#auth_button(type='submit') Refund
+    script(src='/javascripts/captures.js')
