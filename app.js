@@ -147,7 +147,8 @@ app.post('/payments/:paymentid/authorizations', async (req, res, next) => {
             amount: data.amount,
             currency: data.currency,
             description: data.statement_soft_descriptor,
-            payment_id: req.params.paymentid
+            payment_id: req.params.paymentid,
+            authorization_id: data.id
         })
     })
     .catch(error => console.log("Error app.js: " + error.message))
@@ -191,7 +192,8 @@ app.post('/payments/:paymentid/captures', async (req, res, next) => {
             amount: data.amount,
             currency: data.currency,
             description: data.statement_soft_descriptor,
-            payment_id: req.params.paymentid
+            payment_id: req.params.paymentid,
+            capture_id: data.id
         })
     })
     .catch(error => console.log("Error app.js: " + error.message))
@@ -234,7 +236,8 @@ app.post('/payments/:paymentid/refunds', async (req, res, next) => {
             amount: data.amount,
             currency: data.currency,
             description: data.statement_soft_descriptor,
-            payment_id: req.params.paymentid
+            payment_id: req.params.paymentid,
+            refund_id: data.id
         })
     })
     .catch(error => console.log("Error app.js: " + error.message))
