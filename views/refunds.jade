@@ -1,0 +1,14 @@
+html
+  head
+    title #{title}
+  body
+    h1 Refund Completed
+    .checkout-page
+      form#refunds-form
+        .field
+          label payment_id: #{payment_id}
+          input(type='hidden' id='payment_id' value='#{payment_id}')
+        .field          
+          label amount: #{amount}
+        .field      
+          label currency: #{currency}
